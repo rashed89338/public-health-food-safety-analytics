@@ -139,14 +139,7 @@ However, major concerns remained. Access to piped water declined, reliance on st
 
 These findings suggest that targeted awareness programs, hygiene monitoring, improved WASH infrastructure, and food safety interventions are still needed for restaurants, food vendors, and customers.
 
-## Repository Contents
 
-```text
-code/          SAS and Stata scripts used for data preparation and analysis
-outputs/       Tables and summary results
-docs/          Methodology and project notes
-README.md      Project overview
-```
 
 ## Data Note
 
