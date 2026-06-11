@@ -1,0 +1,281 @@
+/****************************************************************************************
+ Project: Trends in Hygiene Practices Among Restaurants and Food Vendors in Bangladesh
+****************************************************************************************/
+
+
+/*------------------------------------------------------------
+  1. Set library paths
+------------------------------------------------------------*/
+
+libname rawdata  "path_to_raw_data";
+libname cleandata "path_to_clean_data";
+
+
+/*------------------------------------------------------------
+  2. Load 2014 and 2018 restaurant datasets
+------------------------------------------------------------*/
+
+data restaurant_2014;
+    set rawdata.restaurant_2014;
+    survey_year = 2014;
+    time = 0;
+run;
+
+data restaurant_2018;
+    set rawdata.restaurant_2018;
+    survey_year = 2018;
+    time = 1;
+run;
+
+
+/*------------------------------------------------------------
+  3. Keep key restaurant variables
+------------------------------------------------------------*/
+
+data restaurant_2014_clean;
+    set restaurant_2014;
+
+    keep 
+        survey_year time psu_no pw
+        q2_2m q2_4m
+        shallow_tube_drink deep_tube_drink inside_pump_drink outside_pump_drink
+        filter_drink tara_pump_drink
+        shallow_tube_utclean deep_tube_utclean inside_pump_utclean outside_pump_utclean
+        direct_channel_utclean
+        improved_toi unimproved_toi
+        hand_clean_ss hand_clean_cook
+        wash_bh_s wash_bh_c
+        sale_rice sale_bread sale_fish sale_meategg sale_lenti sale_vegetables
+        sale_sweets sale_fried sale_mashed sale_juice
+        save_rice save_bread save_fish save_meategg save_dal save_veg
+        save_fried save_mashed save_sweets save_fuchka
+        pit river Roadside;
+run;
+
+data restaurant_2018_clean;
+    set restaurant_2018;
+
+    keep 
+        survey_year time psu_no pw
+        q2_2m q2_4m
+        shallow_tube_drink deep_tube_drink inside_pump_drink outside_pump_drink
+        filter_drink tara_pump_drink
+        shallow_tube_utclean deep_tube_utclean inside_pump_utclean outside_pump_utclean
+        direct_channel_utclean
+        improved_toi unimproved_toi
+        hand_clean_ss hand_clean_cook
+        wash_bh_s wash_bh_c
+        sale_rice sale_bread sale_fish sale_meategg sale_lenti sale_vegetables
+        sale_sweets sale_fried sale_mashed sale_juice
+        save_rice save_bread save_fish save_meategg save_dal save_veg
+        save_fried save_mashed save_sweets save_fuchka
+        pit river Roadside;
+run;
+
+
+/*------------------------------------------------------------
+  4. Append restaurant datasets
+------------------------------------------------------------*/
+
+data cleandata.restaurant_appended;
+    set restaurant_2014_clean restaurant_2018_clean;
+run;
+
+
+/*------------------------------------------------------------
+  5. Load 2014 and 2018 food vendor datasets
+------------------------------------------------------------*/
+
+data vendor_2014;
+    set rawdata.vendor_2014;
+    survey_year = 2014;
+    time = 0;
+run;
+
+data vendor_2018;
+    set rawdata.vendor_2018;
+    survey_year = 2018;
+    time = 1;
+run;
+
+
+/*------------------------------------------------------------
+  6. Keep key food vendor variables
+------------------------------------------------------------*/
+
+data vendor_2014_clean;
+    set vendor_2014;
+
+    keep 
+        survey_year time psu_no pw
+        q2_2 q2_4
+        Shallow_drink Deep_tube_drink tap_inside_drink tap_outside_drink
+        filter_drink no_water_drink
+        Shallow_tube_utclean Deep_tube_utclean tap_inside_utclean tap_outside_utclean
+        filter_utclean no_water_utclean direct_channel_utclean
+        near_market near_house near_school no_facility not_applicable
+        wash_both_hand hand_clean
+        sale_tea sale_fuchka sale_fried sale_juice sale_cutfruit sale_pickle
+        sale_bread sale_rice sale_curry sale_mashed sale_ricecake sale_chanachur sale_sweets
+        save_tea save_fuchka save_fried save_juice save_pickle save_fruit save_curry
+        save_cutfruit save_bread save_mashed save_ricecake save_chanachur save_sweets
+        hwws_fv_21n22 hwws_fv_23n24 hwws_fv_25 hwws_fv_50n52
+        hwws_fv_51n54 hwws_fv_58 hwws_fv_55n56 hwws_fv_53
+        hwws_fv_44n45 hwws_fv_41n42 hwws_fv_26n27n31;
+run;
+
+data vendor_2018_clean;
+    set vendor_2018;
+
+    keep 
+        survey_year time psu_no pw
+        q2_2 q2_4
+        Shallow_drink Deep_tube_drink tap_inside_drink tap_outside_drink
+        filter_drink no_water_drink
+        Shallow_tube_utclean Deep_tube_utclean tap_inside_utclean tap_outside_utclean
+        filter_utclean no_water_utclean direct_channel_utclean
+        near_market near_house near_school no_facility not_applicable
+        wash_both_hand hand_clean
+        sale_tea sale_fuchka sale_fried sale_juice sale_cutfruit sale_pickle
+        sale_bread sale_rice sale_curry sale_mashed sale_ricecake sale_chanachur sale_sweets
+        save_tea save_fuchka save_fried save_juice save_pickle save_fruit save_curry
+        save_cutfruit save_bread save_mashed save_ricecake save_chanachur save_sweets
+        hwws_fv_21n22 hwws_fv_23n24 hwws_fv_25 hwws_fv_50n52
+        hwws_fv_51n54 hwws_fv_58 hwws_fv_55n56 hwws_fv_53
+        hwws_fv_44n45 hwws_fv_41n42 hwws_fv_26n27n31;
+run;
+
+
+/*------------------------------------------------------------
+  7. Append food vendor datasets
+------------------------------------------------------------*/
+
+data cleandata.vendor_appended;
+    set vendor_2014_clean vendor_2018_clean;
+run;
+
+
+/*------------------------------------------------------------
+  8. Check dataset structure
+------------------------------------------------------------*/
+
+proc contents data=cleandata.restaurant_appended;
+run;
+
+proc contents data=cleandata.vendor_appended;
+run;
+
+
+/*------------------------------------------------------------
+  9. Check survey year and time variable
+------------------------------------------------------------*/
+
+proc freq data=cleandata.restaurant_appended;
+    tables survey_year time / missing;
+run;
+
+proc freq data=cleandata.vendor_appended;
+    tables survey_year time / missing;
+run;
+
+
+/*------------------------------------------------------------
+  10. Check selected restaurant variables
+------------------------------------------------------------*/
+
+proc freq data=cleandata.restaurant_appended;
+    tables 
+        shallow_tube_drink deep_tube_drink inside_pump_drink outside_pump_drink
+        filter_drink tara_pump_drink
+        shallow_tube_utclean deep_tube_utclean inside_pump_utclean outside_pump_utclean
+        improved_toi unimproved_toi
+        hand_clean_ss hand_clean_cook
+        wash_bh_s wash_bh_c
+        sale_rice sale_bread sale_fish sale_meategg sale_lenti sale_vegetables
+        sale_sweets sale_fried sale_mashed sale_juice
+        save_rice save_bread save_fish save_meategg save_dal save_veg
+        save_fried save_mashed save_sweets save_fuchka
+        pit river Roadside
+        / missing;
+run;
+
+
+/*------------------------------------------------------------
+  11. Check selected food vendor variables
+------------------------------------------------------------*/
+
+proc freq data=cleandata.vendor_appended;
+    tables
+        Shallow_drink Deep_tube_drink tap_inside_drink tap_outside_drink
+        filter_drink no_water_drink
+        Shallow_tube_utclean Deep_tube_utclean tap_inside_utclean tap_outside_utclean
+        filter_utclean no_water_utclean direct_channel_utclean
+        near_market near_house near_school no_facility not_applicable
+        wash_both_hand hand_clean
+        sale_tea sale_fuchka sale_fried sale_juice sale_cutfruit sale_pickle
+        sale_bread sale_rice sale_curry sale_mashed sale_ricecake sale_chanachur sale_sweets
+        save_tea save_fuchka save_fried save_juice save_pickle save_fruit save_curry
+        save_cutfruit save_bread save_mashed save_ricecake save_chanachur save_sweets
+        hwws_fv_21n22 hwws_fv_23n24 hwws_fv_25 hwws_fv_50n52
+        hwws_fv_51n54 hwws_fv_58 hwws_fv_55n56 hwws_fv_53
+        hwws_fv_44n45 hwws_fv_41n42 hwws_fv_26n27n31
+        / missing;
+run;
+
+
+/*------------------------------------------------------------
+  12. Weighted descriptive checks
+------------------------------------------------------------*/
+
+proc surveyfreq data=cleandata.restaurant_appended;
+    cluster psu_no;
+    weight pw;
+    tables time * inside_pump_drink / row col;
+run;
+
+proc surveyfreq data=cleandata.restaurant_appended;
+    cluster psu_no;
+    weight pw;
+    tables time * improved_toi / row col;
+run;
+
+proc surveyfreq data=cleandata.restaurant_appended;
+    cluster psu_no;
+    weight pw;
+    tables time * wash_bh_s / row col;
+run;
+
+proc surveyfreq data=cleandata.vendor_appended;
+    cluster psu_no;
+    weight pw;
+    tables time * tap_inside_drink / row col;
+run;
+
+proc surveyfreq data=cleandata.vendor_appended;
+    cluster psu_no;
+    weight pw;
+    tables time * near_market / row col;
+run;
+
+proc surveyfreq data=cleandata.vendor_appended;
+    cluster psu_no;
+    weight pw;
+    tables time * wash_both_hand / row col;
+run;
+
+
+/*------------------------------------------------------------
+  13. Export analysis-ready datasets
+------------------------------------------------------------*/
+
+proc export data=cleandata.restaurant_appended
+    outfile="restaurant_appended_for_stata.csv"
+    dbms=csv
+    replace;
+run;
+
+proc export data=cleandata.vendor_appended
+    outfile="vendor_appended_for_stata.csv"
+    dbms=csv
+    replace;
+run;
